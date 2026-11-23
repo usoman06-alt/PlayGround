@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#f3a75c" />
+  <title>Sundown Sprint — The Saltglass Run</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23ffd465'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23e9a46c'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game-shell">
+    <canvas id="game" aria-label="3D desert driving game"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Sundown Sprint home"><span class="brand-mark">☼</span><span>SUNDOWN<span class="brand-light"> SPRINT</span></span></a>
+      <div class="level-tag"><span class="live-dot"></span> STAGE 04 <b>·</b> SALTGLASS RUN</div>
+      <button class="sound-button" id="sound-button" aria-label="Toggle sound">♪ <span>SOUND ON</span></button>
+    </header>
+    <section class="hud" id="hud" aria-live="polite">
+      <div class="hud-block distance-block"><span class="eyebrow">DISTANCE TO LIGHTHOUSE</span><div class="distance-line"><strong id="distance">1,000</strong><span>m</span></div><div class="progress-track"><i id="progress-fill"></i><span class="progress-pin" id="progress-pin"></span></div></div>
+      <div class="hud-block timer-block"><span class="eyebrow">SUNSET WINDOW</span><strong id="timer">01:35</strong></div>
+      <div class="hud-block relay-block"><span class="eyebrow">RELAY SHARDS</span><div id="relays" class="relay-icons"><i></i><i></i><i></i><i></i></div></div>
+      <div class="hud-block speed-block"><span class="eyebrow">BUGGY SPEED</span><div><strong id="speed">0</strong><small>KM/H</small></div></div>
+    </section>
+    <div class="weather-alert" id="weather-alert"><span class="wind-icon">〰</span><span><b>CROSSWIND INCOMING</b><small>brace for a sideways gust</small></span><i class="alert-meter"><em id="gust-fill"></em></i></div>
+    <div class="mechanic-hud" id="mechanic-hud"><div class="mechanic-label"><span class="sun-mini">☼</span><span>SUN-SKIP <small>HOLD SPACE TO CHARGE</small></span><b id="charge-number">0%</b></div><div class="charge-track"><i id="charge-fill"></i></div></div>
+    <div class="toast" id="toast">CHECKPOINT REACHED</div>
+    <div class="reticle"><span></span></div>
+    <section class="screen" id="start-screen">
+      <div class="screen-card intro-card">
+        <div class="kicker"><span>★</span> A NEW ROUTE THROUGH THE GOLDEN HOUR</div>
+        <h1>THE<br><em>SALTGLASS</em><br>RUN<span class="title-dot">.</span></h1>
+        <p class="intro-copy">The lighthouse is fading. Thread the canyon, recover the relay shards, and outrun the last light.</p>
+        <div class="intro-detail"><span class="detail-icon">☼</span><div><b>NEW MOVE · SUN-SKIP</b><small>Drift to charge. Release SPACE to phase through danger.</small></div></div>
+        <button class="primary-button" id="start-button">START THE RUN <span>→</span></button>
+        <div class="control-hint"><span>WASD / ARROWS</span> DRIVE <i></i> <span>SPACE</span> SUN-SKIP</div>
+      </div>
+      <div class="poster-stamp">NO<br>TURNING<br>BACK</div>
+      <div class="screen-footer"><span>01 — 04</span><span>LAST LIGHT, LONG ROAD.</span></div>
+    </section>
+    <section class="screen hidden" id="end-screen">
+      <div class="screen-card end-card">
+        <div class="kicker" id="end-kicker">THE LAST LIGHT</div>
+        <h2 id="end-title">NICE<br><em>DRIVING</em><span class="title-dot">.</span></h2>
+        <p class="intro-copy" id="end-copy">The canyon keeps its secrets for another night.</p>
+        <div class="result-stats"><div><small>RELAY SHARDS</small><b id="result-relays">0 / 4</b></div><div><small>BEST DISTANCE</small><b id="result-distance">0 m</b></div></div>
+        <button class="primary-button" id="restart-button">RUN IT BACK <span>↻</span></button>
+        <div class="control-hint">THE SALTGLASS RUN <i></i> STAGE 04</div>
+      </div>
+      <div class="screen-footer"><span>01 — 04</span><span>LAST LIGHT, LONG ROAD.</span></div>
+    </section>
+    <nav class="touch-controls" aria-label="Touch driving controls"><button data-control="left">◀</button><button data-control="right">▶</button><button data-control="brake">BRAKE</button><button data-control="accelerate">GO</button><button data-control="skip">☼</button></nav>
+    <div class="loading" id="loading">WARMING UP THE ENGINE <span>···</span></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
