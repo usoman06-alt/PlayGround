@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><title>Horizon Rush</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="game">
+  <canvas id="canvas"></canvas>
+  <div id="vignette"></div>
+  <div id="topbar">
+    <div class="brand"><span class="horizon">HORIZON</span><span class="rush">RUSH</span></div>
+    <div id="district">Sıcak Bölge • 08:42</div>
+  </div>
+  <div id="quest">
+    <div class="quest-head"><span>YOLCULUĞA BAŞLA</span><b>01</b></div>
+    <div id="questTitle">Festival'e ulaş</div>
+    <div class="progress"><i id="questBar"></i></div>
+  </div>
+  <div id="speedo">
+    <div id="gear">1</div>
+    <div><span id="speed">000</span><small>KM/H</small></div>
+    <div id="rpm"><i></i></div>
+  </div>
+  <div id="map"><canvas id="mini"></canvas><div class="map-route"></div></div>
+  <div id="pos"><span id="position">1</span><small>/ 8</small></div>
+  <div id="toast"></div>
+  <div id="menu">
+    <div class="menu-card">
+      <div class="eyebrow">SERBEST DÜNYA</div>
+      <h1>HORIZON <em>RUSH</em></h1>
+      <p>Şehrin açık yollarında yarış, drifte gir ve en hızlı turunu yap.</p>
+      <button id="startBtn">YARIŞA BAŞLA <span>→</span></button>
+      <div class="controls"><b>WASD / OK</b> sürüş &nbsp; <b>SPACE</b> el freni &nbsp; <b>R</b> yeniden başlat</div>
+    </div>
+  </div>
+  <div id="countdown"></div>
+  <div id="touch">
+    <div class="touch-steer"><button data-key="left">‹</button><button data-key="right">›</button></div>
+    <div class="touch-pedals"><button data-key="brake" class="brake">●</button><button data-key="gas" class="gas">▲</button></div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body></html>
