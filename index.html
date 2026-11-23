@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0" />
+  <meta name="theme-color" content="#070b12" />
+  <meta name="description" content="APEX HORIZON — kıvrımlı kıyı yollarında geçen 3D açık dünya araba oyunu." />
+  <title>APEX HORIZON — Open World Racing</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b12'/%3E%3Cpath d='M14 45 30 17l6 12 5-7 9 23H14z' fill='%23ff6a1a'/%3E%3C/svg%3E" />
+  <link rel="preload" href="/fonts/orbitron-900.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="/fonts/rajdhani-600.ttf" as="font" type="font/ttf" crossorigin />
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <canvas id="game-canvas" aria-label="APEX HORIZON 3D oyun alanı"></canvas>
+
+  <div id="boot">
+    <div class="boot-mark">APEX<span>HORIZON</span></div>
+    <div class="boot-track"><i></i></div>
+    <div class="boot-copy">DÜNYA OLUŞTURULUYOR…</div>
+  </div>
+
+  <div id="ui">
+    <!-- ============ HUD ============ -->
+    <div id="hud" class="hidden" aria-hidden="false">
+      <header class="hud-top">
+        <div class="hud-brand">
+          <span class="brand-mark">APEX</span><span class="brand-horizon">HORIZON</span>
+          <i>OPEN WORLD</i>
+        </div>
+
+        <div id="race-hud" class="hidden">
+          <div class="race-block">
+            <small>COAST SPRINT</small>
+            <strong id="race-timer">00:00.0</strong>
+          </div>
+          <div class="race-block race-progress">
+            <small>CHECKPOINT</small>
+            <strong><span id="race-cp">0</span><em>/6</em></strong>
+            <div class="race-bar"><i id="race-bar"></i></div>
+          </div>
+        </div>
+
+        <div class="map-panel">
+          <div class="map-ring">
+            <canvas id="minimap" width="360" height="360"></canvas>
+            <span class="map-north">N</span>
+          </div>
+          <div class="map-meta"><span id="map-location">KIYI YOLU</span><b id="map-distance">--</b></div>
+        </div>
+      </header>
+
+      <div id="event-card">
+        <div class="event-accent"></div>
+        <div class="event-copy">
+          <small>ETKİNLİK · COAST SPRINT</small>
+          <strong>KIYI SPRİNTİ</strong>
+          <span>Pusula kapısına girerek başla</span>
+        </div>
+        <div class="event-len"><b>3.6</b><span>KM</span></div>
+      </div>
+
+      <div id="target-indicator" class="hidden">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 19 20l-7-4-7 4 7-18z"/></svg>
+        <span id="target-dist">--</span>
+      </div>
+
+      <div id="toasts" aria-live="polite"></div>
+
+      <div id="drift-panel">
+        <div class="drift-head"><span>DRIFT</span><b id="drift-score">0</b></div>
+        <div class="drift-meter"><i id="drift-fill"></i></div>
+        <small id="drift-mult">x1.0</small>
+      </div>
+
+      <div id="prompt" class="hidden">
+        <kbd>E</kbd>
+        <div><b>SPRİNTİ BAŞLAT</b><span>Coast Sprint · 3.6 km</span></div>
+      </div>
+
+      <div id="speedo">
+        <svg viewBox="0 0 220 158" aria-hidden="true">
+          <defs>
+            <linearGradient id="speedGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#37e6ff"/>
+              <stop offset="58%" stop-color="#d6f7ff"/>
+              <stop offset="100%" stop-color="#ff7a22"/>
+            </linearGradient>
+            <filter id="speedGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g id="speedo-ticks"></g>
+          <path id="speedo-track" d="M 28 126 A 84 84 0 0 1 192 126" />
+          <path id="speedo-fill" d="M 28 126 A 84 84 0 0 1 192 126" />
+        </svg>
+        <div class="speedo-center">
+          <div class="speed-value"><span id="speed-num">0</span><small>KM/H</small></div>
+          <div class="speed-sub"><b id="gear">N</b><i></i><span id="rpm-bar"><em></em></span></div>
+        </div>
+        <div class="nos-bar"><span>NOS</span><div class="nos-track"><i id="nos-fill"></i></div></div>
+      </div>
+
+      <div id="touch-controls">
+        <div class="steer-pad">
+          <button class="touch-btn steer" data-control="left" aria-label="Sola dön">
+            <svg viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="touch-btn steer" data-control="right" aria-label="Sağa dön">
+            <svg viewBox="0 0 24 24"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="pedal-pad">
+          <button class="touch-btn brake" data-control="brake" aria-label="Fren">
+            <svg viewBox="0 0 24 24"><path d="M12 4v16M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+          <button class="touch-btn gas" data-control="gas" aria-label="Gaz">
+            <svg viewBox="0 0 24 24"><path d="M12 20V5m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <button class="touch-btn handbrake" data-control="handbrake">DRIFT</button>
+        <button class="touch-btn nitro" data-control="nitro">NOS</button>
+        <button id="race-touch-btn" class="touch-btn race-touch">SPRINT</button>
+      </div>
+
+      <div id="hint-bar">
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> SÜRÜŞ</span>
+        <span><kbd>SPACE</kbd> EL FRENİ</span>
+        <span><kbd>SHIFT</kbd> NOS</span>
+        <span><kbd>E</kbd> YARIŞ</span>
+        <span><kbd>C</kbd> KAMERA</span>
+        <span><kbd>R</kbd> SIFIRLA</span>
+      </div>
+    </div>
+
+    <!-- ============ TITLE ============ -->
+    <section id="title-screen">
+      <div class="title-shade"></div>
+      <div class="title-top">
+        <div class="title-top-brand">APEX <span>HORIZON</span></div>
+        <div class="title-top-meta"><i></i> AÇIK DÜNYA · GERÇEK ZAMANLI 3D</div>
+      </div>
+
+      <div class="title-content">
+        <div class="kicker"><i></i> COASTAL OPEN WORLD · 2026</div>
+        <h1 class="logo"><span>APEX</span><em>HORIZON</em></h1>
+        <p class="tagline">Kıvrımlı kıyı yolları. Sınırsız özgürlük.<br/><b>Şehrin ışıkları, okyanusun ufku, tek bir gaz.</b></p>
+
+        <div class="garage-panel">
+          <div class="garage-head">
+            <div><small>GARAJ</small><strong>APEX GT-R</strong></div>
+            <span class="garage-badge">HYPER SERIES</span>
+          </div>
+          <div class="specs">
+            <div><b>780</b><span>HP</span></div>
+            <div><b>2.8</b><span>0–100</span></div>
+            <div><b>335</b><span>KM/S</span></div>
+            <div><b>AWD</b><span>ÇEKİŞ</span></div>
+          </div>
+          <div class="paint-row"><span>RENK</span><div id="paint-swatches"></div></div>
+        </div>
+
+        <div class="cta-row">
+          <button id="play-btn" aria-label="Play"><span class="cta-main">PLAY</span><span class="cta-sub">BAŞLA</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l14 8-14 8V4z"/></svg>
+          </button>
+          <div class="cta-side">
+            <span class="cta-hint">KLAVYE / DOKUNMATİK</span>
+            <span class="cta-note">Serbest sürüş · 3 etkinlik · 2 pist</span>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> SÜRÜŞ</span>
+          <span><kbd>SPACE</kbd> EL FRENİ</span>
+          <span><kbd>SHIFT</kbd> NOS</span>
+          <span><kbd>E</kbd> YARIŞ</span>
+          <span><kbd>C</kbd> KAMERA</span>
+        </div>
+      </div>
+
+      <div class="title-side">
+        <div class="side-line"><span>01</span> SERBEST SÜRÜŞ</div>
+        <div class="side-line"><span>02</span> KIYI SPRİNTİ</div>
+        <div class="side-line"><span>03</span> GECE GÖREVİ</div>
+      </div>
+
+      <div class="title-footer">
+        <span>© 2026 APEX HORIZON · TARAYICIDA ÇALIŞAN 3D OYUN</span>
+        <span class="footer-right">WEBGL 2 · 60 FPS HEDEFİ <i></i></span>
+      </div>
+    </section>
+
+    <div id="countdown" class="hidden"></div>
+
+    <section id="result-screen" class="hidden">
+      <div class="result-card">
+        <div class="kicker"><i></i> SPRINT COMPLETE</div>
+        <h2>FINISH</h2>
+        <div class="result-time"><span id="result-time">00:00.0</span><small>TOPLAM SÜRE</small></div>
+        <div class="result-stats">
+          <div><b id="result-best">--</b><span>EN İYİ</span></div>
+          <div><b id="result-cp">6/6</b><span>CHECKPOINT</span></div>
+          <div><b id="result-cr">+0</b><span>KREDİ</span></div>
+        </div>
+        <div class="result-actions">
+          <button id="result-again" class="primary">TEKRAR <kbd>E</kbd></button>
+          <button id="result-free">SERBEST SÜRÜŞ</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="flash"></div>
+    <div id="speedlines"></div>
+  </div>
+</body>
+</html>
